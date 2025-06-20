@@ -1,0 +1,8 @@
+components:
+  parameters:
+    header-correlation-id-request:
+      in: "header"
+      name: "Correlation-Id"
+      schema:
+        type: "string"
+        example: "964627dd4b2d4763bc5129a869624cbf"

@@ -1,0 +1,12 @@
+components:
+  parameters:
+    headers-response:
+      Content-Type:
+        schema:
+          type: "string"
+          example: "application/json"
+      correlation-id:
+        schema:
+          type: "string"
+          example: "964627dd4b2d4763bc5129a869624cbf"
+        description: "Generated automatically if not sent in the request"

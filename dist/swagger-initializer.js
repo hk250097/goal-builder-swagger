@@ -3,7 +3,11 @@ window.onload = function() {
 
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
-    url: "swagger.yaml",
+    urls: [
+      {url: "api/specs/gb-svc/GB-SVC.yaml", name: "GB BFF"},
+      {url: "api/specs/gb-bff/GB-BFF.yaml", name: "GB Service"},
+      {url: "api/specs/gb-bff/GB-NOTIFICATION-SVC.yaml", name: "GB Notification Service"},
+    ],
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [

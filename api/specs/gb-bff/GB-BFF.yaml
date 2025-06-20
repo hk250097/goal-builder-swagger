@@ -1,31 +1,23 @@
 openapi: 3.0.1
 info:
-  title: Goal Builder API
-  description: Goal Builder API Spec
-  version: '1.0'
-externalDocs:
-  description: Goal Builder API Documentation
-  url: ''
-servers:
-  - url: http://financial-wellness-{env}.financial-wellness.{env}.int.dbk.ncr.com
-    description: "GB API's internal to Candescent"
-    variables:
-      env:
-        default: dev
-        enum:
-          - dev
-          - qal
-          - pte
-          - stg
-          - prd
+  description: Goal Builder BFF APIs
+  title: Goal Builder BFF APIs
+  version: "1.0"
+  contact: {}
+tags: []
+servers: []
 
 paths:
   /fws/live/v1/goals:
     get:
       tags:
         - Goals
-      operationId: getGoals
+      operationId: GetGoals
+      summary: "Get Goals"
+      description: API For getting the Goals
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: institutionUserId
           in: query
           required: true
@@ -63,46 +55,34 @@ paths:
             type: string
       responses:
         '200':
-          description: OK
+          description: Success
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
-                additionalProperties:
-                  type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CoffeeCan"
         '400':
-          description: Missing Required HTTP Headers
-          content:
-            application/json: { }
+          $ref: "#/components/responses/400"
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (Bank account not found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/500"
+
     put:
       tags:
         - Goals
-      operationId: updateGoals
+      operationId: UpdateGoals
+      summary: "Update Goals"
+      description: API For Updating the Goals
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: accountId
           in: query
           required: false
@@ -127,116 +107,126 @@ paths:
         required: true
       responses:
         '200':
-          description: OK
+          description: Success
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
-                additionalProperties:
-                  type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CoffeeCan"
+          headers:
+            x-correlation-id:
+              $ref: "#/components/headers/res-correlationId"
         '400':
-          description: Missing Required HTTP Headers
-          content:
-            application/json: { }
+          $ref: "#/components/responses/400"
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (Bank account not found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/500"
+
     post:
       tags:
         - Goals
-      operationId: createGoals
+      operationId: CreateGoals
+      summary: "Create Goals"
+      description: API For Creating the Goals
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CoffeeCan'
-        required: true
+
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Success
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
-                additionalProperties:
-                  type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CoffeeCan"
+          headers:
+            x-correlation-id:
+              $ref: "#/components/headers/res-correlationId"
+        '400':
+          $ref: "#/components/responses/400"
+        '401':
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
+        '500':
+          $ref: "#/components/responses/500"
+
     delete:
       tags:
         - Goals
-      operationId: deleteGoals
+      operationId: DeleteGoals
+      summary: "Delete Goals"
+      description: API For Deleting the Goals
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: coffeeCanId
           in: query
           required: true
           schema:
             type: integer
             format: int64
+
+      responses:
+        '204':
+          description: Success
+          headers:
+            x-correlation-id:
+              $ref: "#/components/headers/res-correlationId"
+        '400':
+          $ref: "#/components/responses/400"
+        '401':
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
+        '500':
+          $ref: "#/components/responses/500"
+
+  /fws/live/v1/goals/config:
+    get:
+      tags:
+        - Goal Builder Config
+      operationId: GoalBuilderConfig
+      summary: "API to get Configs for the Goal Builder"
+      description: Get Configs for the Goal Builder
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
       responses:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '400':
-          description: Missing Required HTTP Headers
-          content:
-            application/json: { }
-        '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (Bank account not found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+                $ref: "#/components/schemas/GBConfigEntity"
+
   /fws/live/v1/goals/user-account:
     post:
       tags:
-        - Change Account
+        - Update Account
       summary: Change bank account
       description: Change bank account
       operationId: updateAccount
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: accountId
           in: query
           required: true
@@ -257,43 +247,27 @@ paths:
         '200':
           description: OK
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountInformation"
         '400':
-          description: Missing Required HTTP Headers
-          content:
-            application/json: {}
+          $ref: "#/components/responses/400"
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (Bank account not found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/500"
   /fws/live/v1/goals/upcoming-transactions:
     get:
       tags:
-        - transactions-controller
+        - Transactions
       summary: Get list of upcoming(pending) transactions
       description: Returns list of upcoming(pending) transactions
       operationId: getUpcomingTransactions
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: institutionUserId
           in: query
           required: true
@@ -302,43 +276,31 @@ paths:
             format: int64
       responses:
         '200':
-          description: OK
+          description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TransactionsResponse"
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (No transaction found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/500"
+
   /fws/live/v1/goals/transactions:
     get:
       tags:
-        - GB Transactios
+        - Transactions
       summary: Get list of pending and completed transactions
       description: Returns list of pending and completed transactions
       operationId: getTransactions
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: institutionUserId
           in: query
           required: true
@@ -375,43 +337,30 @@ paths:
         '400':
           description: Invalid date range
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: object
+                $ref: "#/components/schemas/BFFError"
+              example:
+                statusCode: 400
+                error: Invalid date range
+                message: Client executed a bad request
+                details: "/query/date must have correct format 'startEnd/endDate' "
+                displayMessage: Client executed a bad request
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (No transaction found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-  /fws/live/v1/goals/account-goal-detail:
+          $ref: "#/components/responses/500"
+
+  /fws/live/v1/goals/goalAccount:
     get:
       tags:
-        - institution-user-account-controller
+        - Goal Details
       summary: Returns user bank account and Goal savings
       description: Returns user bank account and Goal savings
       operationId: getInstitutionUserAccountDetail
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: institutionUserId
           in: query
           required: true
@@ -426,53 +375,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccountInformation'
         '400':
-          description: Missing Required HTTP Headers
-          content:
-            application/json: {}
+          $ref: "#/components/responses/400"
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (Bank account not found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/500"
   /fws/live/v1/goals/fund-types:
     get:
       tags:
         - Funds
       operationId: getFundTypes
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
       responses:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
                 additionalProperties:
                   type: object
+
   /fws/live/v1/goals/deposit-allocation:
     get:
       tags:
-        - coffee-can-controller
+        - Deposit Allocation
       operationId: getDepositAllocationForAllCans
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: institutionUserId
           in: query
           required: true
@@ -483,43 +416,17 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/DepositAllocationSumResponse'
-        '400':
-          description: Missing Required HTTP Headers
-          content:
-            application/json: { }
-        '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (Bank account not found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-  /fws/live/v1/goals/account:
+  /fws/live/v1/goals/goals-account:
     get:
       tags:
-        - coffee-can-controller
+        - Goals & Account Details
       operationId: getCoffeeCanListAndAccountDetails
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: institutionUserId
           in: query
           required: true
@@ -543,7 +450,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: array
                 items:
@@ -556,6 +463,8 @@ paths:
       description: Returns eligible bank accounts
       operationId: getBankAccounts
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: listAccount
           in: query
           required: true
@@ -569,33 +478,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccountsResponse'
         '400':
-          description: Missing Required HTTP Headers
-          content:
-            application/json: {}
+          $ref: "#/components/responses/400"
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (Bank account not found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/500"
   /fws/live/v1/goals/delete-upcoming:
     delete:
       tags:
@@ -604,6 +491,8 @@ paths:
       description: Deletes(skip) upcoming execution of recurring transfer job
       operationId: deleteUpcomingJob
       parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
         - name: coffeeCanId
           in: query
           required: true
@@ -611,44 +500,19 @@ paths:
             type: integer
             format: int64
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionsResponse'
+        '204':
+          description: Resource Deleted
+          headers:
+            x-correlation-id:
+              $ref: "#/components/headers/res-correlationId"
+
         '400':
-          description: Invalid coffeeCanId
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/400"
         '401':
-          description: Authorization invalid or Missing Authorization Header
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        '404':
-          description: Entities not Found (No coffee can found)
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/401"
         '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+          $ref: "#/components/responses/500"
+
   /fws/live/v1/goals/complete-notification:
     get:
       tags:
@@ -664,7 +528,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
                 additionalProperties:
@@ -683,7 +547,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
                 additionalProperties:
@@ -703,7 +567,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
                 additionalProperties:
@@ -723,13 +587,33 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
                 additionalProperties:
                   type: object
+
+# ------------------- Components ----------------
+
 components:
+  securitySchemes:
+    auth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
   schemas:
+    GBConfigEntity:
+      type: object
+      properties:
+        primaryUser:
+          type: boolean
+        userType:
+          type: string
+          description: User Type (PRIMARY or ENTITLED)
+          example: PRIMARY or ENTITLED
+      required:
+        - primaryUser
+        - userType
     CompleteCanUpdateRequest:
       type: object
       properties:
@@ -994,11 +878,79 @@ components:
           type: number
         displayCardNumber:
           type: string
+
+    error:
+      type: "object"
+      properties:
+        code:
+          type: "string"
+          description: "The error code"
+          example: "GB-400-1001"
+        message:
+          type: "string"
+          description: "The error message"
+          example: "/query/goals must have required property 'accountId' "
+    errors:
+      type: "object"
+      properties:
+        errors:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/error"
+    BFFError:
+      type: object
+      anyOf:
+        - type: object
+          properties:
+            statusCode:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: ClientErrorException
+            message:
+              type: string
+              example: Client executed a bad request
+            details:
+              $ref: "#/components/schemas/errors"
+            displayMessage:
+              type: string
+              example: Client executed a bad request
+            timestamp:
+              type: string
+              example: "2025-06-23T16:07:16.109Z"
+            path:
+              type: string
+              example: "/v1/fws"
+        - type: object
+          properties:
+            statusCode:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: ClientErrorException
+            message:
+              type: string
+              example: Client executed a bad request
+            details:
+              type: string
+              example: "/query/goals must have required property 'accountId' "
+            displayMessage:
+              type: string
+              example: Client executed a bad request
+            timestamp:
+              type: string
+              example: "2025-05-23T16:07:16.109Z"
+            path:
+              type: string
+              example: "/v1/fws?accountId=kP8snK0hBwOLEprxJbgsJD8WP-bOIsDSeqnMi1QWvdo"
+
   parameters:
     correlationId:
       name: x-correlation-id
       in: header
-      example: x-correlation-id
+      example: 07ae5002-4d4d-46d9-a6c6-bee9f9b29722
       schema:
         type: string
     authorization:
@@ -1009,11 +961,67 @@ components:
       schema:
         type: string
         default: Bearer <JWT>
+
   headers:
-    correlationId:
-      description: Identifier for request and subsequent requests
+    req-correlationId:
+      description: Identifier for request
       required: false
       schema:
         type: string
         format: uuid
         default: d6d6aca7-8ac6-4339-8470-f4a0acc781b3
+    res-correlationId:
+      description: Identifier for response
+      required: false
+      schema:
+        type: string
+        format: uuid
+        default: d6d6aca7-8ac6-4339-8470-f4a0acc781b3
+
+  responses:
+    400:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 400
+            error: ValidationException
+            message: Client executed a bad request
+            details: "/query/goals must have required property 'accountId' "
+            displayMessage: Client executed a bad request
+    401:
+      description: "Invalid Session"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 401
+            error: InvalidSessionException
+            message: Unauthorized Invalid Session
+            details: Invalid Session
+    403:
+      description: "Invalid JWT"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 403
+            error: InvalidJWTException
+            message: JWT is invalid
+            details: Invalid Authorization
+    500:
+      description: "Internal Server Error"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 500
+            error: ServerErrorException
+            message: Server encountered a System Error
+            details: Internal Server Error
+            displayMessage: Server executed a system error

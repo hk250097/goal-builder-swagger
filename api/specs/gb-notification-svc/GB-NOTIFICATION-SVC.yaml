@@ -1,0 +1,216 @@
+openapi: 3.0.1
+info:
+  title: Goal Builder Notification API
+  description: Goal Builder Notification API Spec
+  version: '1.0'
+externalDocs:
+  description: Goal Builder Notification API Documentation
+  url: ''
+servers:
+  - url: http://financial-wellness-{env}.financial-wellness.{env}.int.dbk.ncr.com
+    description: "GB API's internal to Candescent"
+    variables:
+      env:
+        default: dev
+        enum:
+          - dev
+          - qal
+          - pte
+          - stg
+          - prd
+
+paths:
+  /fws/live/v1/notifications:
+    get:
+      tags:
+        - Notifications
+      operationId: GetNotifications
+      summary: "Get Notifications"
+      description: API For getting the Notifications
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NotificationEntity"
+        '400':
+          $ref: "#/components/responses/400"
+        '401':
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
+        '500':
+          $ref: "#/components/responses/500"
+
+# ------------------- Components ----------------
+
+components:
+  securitySchemes:
+    auth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    NotificationEntity:
+      type: object
+      properties:
+        notificationId:
+          type: integer
+      required:
+        - notificationId
+
+    error:
+      type: "object"
+      properties:
+        code:
+          type: "string"
+          description: "The error code"
+          example: "GB-400-1001"
+        message:
+          type: "string"
+          description: "The error message"
+          example: "/query/notification must have required property 'notificationId' "
+    errors:
+      type: "object"
+      properties:
+        errors:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/error"
+    BFFError:
+      type: object
+      anyOf:
+        - type: object
+          properties:
+            statusCode:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: ClientErrorException
+            message:
+              type: string
+              example: Client executed a bad request
+            details:
+              $ref: "#/components/schemas/errors"
+            displayMessage:
+              type: string
+              example: Client executed a bad request
+            timestamp:
+              type: string
+              example: "2025-06-23T16:07:16.109Z"
+            path:
+              type: string
+              example: "/v1/fws"
+        - type: object
+          properties:
+            statusCode:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: ClientErrorException
+            message:
+              type: string
+              example: Client executed a bad request
+            details:
+              type: string
+              example: "/query/notification must have required property 'notificationId' "
+            displayMessage:
+              type: string
+              example: Client executed a bad request
+            timestamp:
+              type: string
+              example: "2025-05-23T16:07:16.109Z"
+            path:
+              type: string
+              example: "/v1/fws?accountId=kP8snK0hBwOLEprxJbgsJD8WP-bOIsDSeqnMi1QWvdo"
+
+  parameters:
+    correlationId:
+      name: x-correlation-id
+      in: header
+      example: 07ae5002-4d4d-46d9-a6c6-bee9f9b29722
+      schema:
+        type: string
+    authorization:
+      name: Authorization
+      in: header
+      description: Signed JWT carrying user data
+      required: false
+      schema:
+        type: string
+        default: Bearer <JWT>
+
+  headers:
+    req-correlationId:
+      description: Identifier for request
+      required: false
+      schema:
+        type: string
+        format: uuid
+        default: d6d6aca7-8ac6-4339-8470-f4a0acc781b3
+    res-correlationId:
+      description: Identifier for response
+      required: false
+      schema:
+        type: string
+        format: uuid
+        default: d6d6aca7-8ac6-4339-8470-f4a0acc781b3
+
+  responses:
+    400:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 400
+            error: ValidationException
+            message: Client executed a bad request
+            details: "/query/notification must have required property 'NotificationId' "
+            displayMessage: Client executed a bad request
+    401:
+      description: "Invalid Session"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 401
+            error: InvalidSessionException
+            message: Unauthorized Invalid Session
+            details: Invalid Session
+    403:
+      description: "Invalid JWT"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 403
+            error: InvalidJWTException
+            message: JWT is invalid
+            details: Invalid Authorization
+    500:
+      description: "Internal Server Error"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 500
+            error: ServerErrorException
+            message: Server encountered a System Error
+            details: Internal Server Error
+            displayMessage: Server executed a system error
