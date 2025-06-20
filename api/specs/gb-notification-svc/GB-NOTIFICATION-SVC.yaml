@@ -3,12 +3,9 @@ info:
   title: Goal Builder Notification API
   description: Goal Builder Notification API Spec
   version: '1.0'
-externalDocs:
-  description: Goal Builder Notification API Documentation
-  url: ''
 servers:
   - url: http://financial-wellness-{env}.financial-wellness.{env}.int.dbk.ncr.com
-    description: "GB API's internal to Candescent"
+    description: "GB Notification API's internal to Candescent"
     variables:
       env:
         default: dev
