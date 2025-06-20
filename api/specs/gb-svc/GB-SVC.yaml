@@ -3,9 +3,6 @@ info:
   title: Goal Builder API
   description: Goal Builder API Spec
   version: '1.0'
-externalDocs:
-  description: Goal Builder API Documentation
-  url: ''
 servers:
   - url: http://financial-wellness-{env}.financial-wellness.{env}.int.dbk.ncr.com
     description: "GB API's internal to Candescent"
