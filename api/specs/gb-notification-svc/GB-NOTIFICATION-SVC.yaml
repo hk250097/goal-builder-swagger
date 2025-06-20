@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.0
 info:
   title: Goal Builder Notification API
   description: Goal Builder Notification API Spec
@@ -41,10 +41,6 @@ paths:
                       $ref: "#/components/schemas/NotificationEntity"
         '400':
           $ref: "#/components/responses/400"
-        '401':
-          $ref: "#/components/responses/401"
-        '403':
-          $ref: "#/components/responses/403"
         '500':
           $ref: "#/components/responses/500"
 
@@ -83,54 +79,6 @@ components:
           type: "array"
           items:
             $ref: "#/components/schemas/error"
-    BFFError:
-      type: object
-      anyOf:
-        - type: object
-          properties:
-            statusCode:
-              type: integer
-              example: 400
-            error:
-              type: string
-              example: ClientErrorException
-            message:
-              type: string
-              example: Client executed a bad request
-            details:
-              $ref: "#/components/schemas/errors"
-            displayMessage:
-              type: string
-              example: Client executed a bad request
-            timestamp:
-              type: string
-              example: "2025-06-23T16:07:16.109Z"
-            path:
-              type: string
-              example: "/v1/fws"
-        - type: object
-          properties:
-            statusCode:
-              type: integer
-              example: 400
-            error:
-              type: string
-              example: ClientErrorException
-            message:
-              type: string
-              example: Client executed a bad request
-            details:
-              type: string
-              example: "/query/notification must have required property 'notificationId' "
-            displayMessage:
-              type: string
-              example: Client executed a bad request
-            timestamp:
-              type: string
-              example: "2025-05-23T16:07:16.109Z"
-            path:
-              type: string
-              example: "/v1/fws?accountId=kP8snK0hBwOLEprxJbgsJD8WP-bOIsDSeqnMi1QWvdo"
 
   parameters:
     correlationId:
@@ -170,41 +118,19 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/BFFError"
+            $ref: "#/components/schemas/error"
           example:
             statusCode: 400
             error: ValidationException
             message: Client executed a bad request
             details: "/query/notification must have required property 'NotificationId' "
             displayMessage: Client executed a bad request
-    401:
-      description: "Invalid Session"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/BFFError"
-          example:
-            statusCode: 401
-            error: InvalidSessionException
-            message: Unauthorized Invalid Session
-            details: Invalid Session
-    403:
-      description: "Invalid JWT"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/BFFError"
-          example:
-            statusCode: 403
-            error: InvalidJWTException
-            message: JWT is invalid
-            details: Invalid Authorization
     500:
       description: "Internal Server Error"
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/BFFError"
+            $ref: "#/components/schemas/error"
           example:
             statusCode: 500
             error: ServerErrorException
