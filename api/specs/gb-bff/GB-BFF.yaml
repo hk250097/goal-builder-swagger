@@ -21,6 +21,16 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: accountId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: coffeeCanName
+          in: query
+          required: false
+          schema:
+            type: string
         - name: coffeeCanStatus
           in: query
           required: false
@@ -34,22 +44,6 @@ paths:
               - NON_RECURRING
               - ACTIVE_COMPLETED
               - RECURRING
-        - name: coffeeCanId
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: accountId
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: coffeeCanName
-          in: query
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: Success
@@ -86,7 +80,7 @@ paths:
               $ref: '#/components/schemas/CoffeeCan'
 
       responses:
-        '201':
+        '200':
           description: Success
           content:
             application/json:
@@ -118,35 +112,12 @@ paths:
       parameters:
         - $ref: "#/components/parameters/correlationId"
         - $ref: "#/components/parameters/authorization"
-        - name: institutionUserId
+        - name: coffeeCanId
           in: query
           required: false
           schema:
             type: integer
             format: int64
-        - name: coffeeCanStatus
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - ACTIVE
-              - DEACTIVE
-              - COMPLETED
-              - CLOSED
-              - NON_RECURRING
-              - ACTIVE_COMPLETED
-              - RECURRING
-        - name: accountId
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: coffeeCanName
-          in: query
-          required: false
-          schema:
-            type: string
       responses:
         '200':
           description: Success
@@ -286,9 +257,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                $ref: '#/components/schemas/CoffeeCanWithAccount'
 
   /v1/coffee-cans/config:
     get:
@@ -377,38 +346,6 @@ paths:
           $ref: "#/components/responses/403"
         '500':
           $ref: "#/components/responses/500"
-  /v1/coffee-cans/upcoming-transactions:
-    get:
-      tags:
-        - Transactions
-      summary: Get list of upcoming(pending) transactions
-      description: Returns list of upcoming(pending) transactions
-      operationId: getUpcomingTransactions
-      parameters:
-        - $ref: "#/components/parameters/correlationId"
-        - $ref: "#/components/parameters/authorization"
-        - name: institutionUserId
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TransactionsResponse"
-        '401':
-          $ref: "#/components/responses/401"
-        '500':
-          $ref: "#/components/responses/500"
 
   /v1/coffee-cans/transactions:
     get:
@@ -474,9 +411,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: object
+                $ref: '#/components/schemas/FundTypes'
 
   /v1/coffee-cans/deposit-allocation:
     get:
@@ -576,27 +511,7 @@ paths:
         '500':
           $ref: "#/components/responses/500"
 
-  /v1/coffee-cans/viewGLBEndUserFullList:
-    post:
-      tags:
-        - AP-SupportDashboard-Extension
-      operationId: viewGLBEndUserFullList
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInfo'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-  /v1/coffee-cans/findGLBEndUserStatus:
+  /v1/coffee-cans/viewEndUserStatus:
     post:
       tags:
         - AP-SupportDashboard-Extension
@@ -613,9 +528,34 @@ paths:
           content:
             application/json:
               schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UserInfo_Status_Eligible'
+                  - $ref: '#/components/schemas/UserInfo_Status_InEligible'
+                  - $ref: '#/components/schemas/UserInfo_Status_Opted_In'
+
+  /v1/coffee-cans/viewEndUserCoffeeCans:
+    post:
+      tags:
+        - AP-SupportDashboard-Extension
+      operationId: viewGLBEndUserCoffeeCans
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfo'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
                 type: object
-                additionalProperties:
-                  type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CoffeeCanList"
 
 # ------------------- Components ----------------
 
@@ -649,6 +589,13 @@ components:
           format: int64
         isRead:
           type: boolean
+    CoffeeCanWithAccount:
+      type: object
+      properties:
+        CoffeeCan:
+          $ref: '#/components/schemas/CoffeeCan'
+        AccountInformation:
+          $ref: '#/components/schemas/AccountInformation'
     CoffeeCan:
       type: object
       properties:
@@ -707,8 +654,6 @@ components:
             - Create
             - Update
             - Delete
-        recurringDetail:
-          $ref: '#/components/schemas/RecurringDetail'
         transactionType:
           type: string
         transactionAmount:
@@ -717,14 +662,6 @@ components:
         activeDeactiveAmount:
           type: number
           format: double
-        transactionList:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
-        pendingList:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
         nickName:
           type: string
         memo:
@@ -834,10 +771,6 @@ components:
     TransactionsResponse:
       type: object
       properties:
-        pendingTransactionsList:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
         transactionsList:
           type: array
           items:
@@ -894,7 +827,47 @@ components:
           type: number
         displayCardNumber:
           type: string
-
+    FundTypes:
+      type: object
+      properties:
+        fundTypeId:
+          type: integer
+        fundTitle:
+          type: string
+        iconUrl:
+          type: string
+        isPredefined:
+          type: boolean
+    CoffeeCanList:
+      type: object
+      properties:
+        coffeeCanName:
+          type: string
+        fundingAccount:
+          type: string
+        createdDate:
+          type: object
+        targetDate:
+          type: object
+        targetAmount:
+          type: number
+        currentAmount:
+          type: number
+    UserInfo_Status_InEligible:
+      type: object
+      properties:
+        Ineligible:
+          type: string
+    UserInfo_Status_Eligible:
+      type: object
+      properties:
+        Eligible:
+          type: string
+    UserInfo_Status_Opted_In:
+      type: object
+      properties:
+        Opted In:
+          type: string
     error:
       type: "object"
       properties:
