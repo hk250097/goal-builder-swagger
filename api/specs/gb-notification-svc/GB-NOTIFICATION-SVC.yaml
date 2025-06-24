@@ -17,7 +17,7 @@ servers:
           - prd
 
 paths:
-  /fws/live/v1/notifications:
+  /v1/notifications:
     get:
       tags:
         - Notifications

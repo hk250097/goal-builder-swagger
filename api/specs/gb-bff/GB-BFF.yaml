@@ -1,20 +1,17 @@
 openapi: 3.0.0
 info:
-  description: Goal Builder BFF APIs
-  title: Goal Builder BFF APIs
-  version: "1.0"
-  contact: {}
-tags: []
-servers: []
+  title: Goal Builder BFF API's
+  description: Goal Builder BFF API's Spec
+  version: '1.0'
 
 paths:
-  /fws/live/v1/goals:
+  /v1/coffee-cans:
     get:
       tags:
-        - Goals
-      operationId: GetGoals
-      summary: "Get Goals"
-      description: API For getting the Goals
+        - Coffee-Cans
+      operationId: Get Coffee-Cans
+      summary: "Get Coffee-Cans"
+      description: API For getting the Coffee-Cans
       parameters:
         - $ref: "#/components/parameters/correlationId"
         - $ref: "#/components/parameters/authorization"
@@ -66,7 +63,104 @@ paths:
                     items:
                       $ref: "#/components/schemas/CoffeeCan"
         '400':
-          $ref: "#/components/responses/400"
+          $ref: "#/components/responses/400-1"
+        '401':
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
+        '500':
+          $ref: "#/components/responses/500"
+    post:
+      tags:
+        - Coffee-Cans
+      operationId: Create Coffee-Cans
+      summary: "Create Coffee-Cans"
+      description: API For Creating the Goals
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoffeeCan'
+
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CoffeeCan"
+          headers:
+            x-correlation-id:
+              $ref: "#/components/headers/res-correlationId"
+        '400':
+          $ref: "#/components/responses/400-1"
+        '401':
+          $ref: "#/components/responses/401"
+        '403':
+          $ref: "#/components/responses/403"
+        '500':
+          $ref: "#/components/responses/500"
+  /v1/coffee-cans/{coffeeCanId}:
+    get:
+      tags:
+        - Coffee-Cans
+      operationId: Get Coffee-Cans by ID
+      summary: "Get Coffee-Cans by ID"
+      description: API For getting the Coffee-Cans by ID
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
+        - name: institutionUserId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: coffeeCanStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - DEACTIVE
+              - COMPLETED
+              - CLOSED
+              - NON_RECURRING
+              - ACTIVE_COMPLETED
+              - RECURRING
+        - name: accountId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: coffeeCanName
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CoffeeCan"
+        '400':
+          $ref: "#/components/responses/400-1"
         '401':
           $ref: "#/components/responses/401"
         '403':
@@ -76,9 +170,9 @@ paths:
 
     put:
       tags:
-        - Goals
-      operationId: UpdateGoals
-      summary: "Update Goals"
+        - Coffee-Cans
+      operationId: UpdateCoffeeCans
+      summary: "Update Coffee-Cans"
       description: API For Updating the Goals
       parameters:
         - $ref: "#/components/parameters/correlationId"
@@ -121,46 +215,7 @@ paths:
             x-correlation-id:
               $ref: "#/components/headers/res-correlationId"
         '400':
-          $ref: "#/components/responses/400"
-        '401':
-          $ref: "#/components/responses/401"
-        '403':
-          $ref: "#/components/responses/403"
-        '500':
-          $ref: "#/components/responses/500"
-
-    post:
-      tags:
-        - Goals
-      operationId: CreateGoals
-      summary: "Create Goals"
-      description: API For Creating the Goals
-      parameters:
-        - $ref: "#/components/parameters/correlationId"
-        - $ref: "#/components/parameters/authorization"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CoffeeCan'
-
-      responses:
-        '201':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/CoffeeCan"
-          headers:
-            x-correlation-id:
-              $ref: "#/components/headers/res-correlationId"
-        '400':
-          $ref: "#/components/responses/400"
+          $ref: "#/components/responses/400-2"
         '401':
           $ref: "#/components/responses/401"
         '403':
@@ -170,7 +225,7 @@ paths:
 
     delete:
       tags:
-        - Goals
+        - Coffee-Cans
       operationId: DeleteGoals
       summary: "Delete Goals"
       description: API For Deleting the Goals
@@ -178,7 +233,7 @@ paths:
         - $ref: "#/components/parameters/correlationId"
         - $ref: "#/components/parameters/authorization"
         - name: coffeeCanId
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -191,19 +246,55 @@ paths:
             x-correlation-id:
               $ref: "#/components/headers/res-correlationId"
         '400':
-          $ref: "#/components/responses/400"
+          $ref: "#/components/responses/400-1"
         '401':
           $ref: "#/components/responses/401"
         '403':
           $ref: "#/components/responses/403"
         '500':
           $ref: "#/components/responses/500"
-
-  /fws/live/v1/goals/config:
+  /v1/coffee-cans?include=account:
     get:
       tags:
-        - Goal Builder Config
-      operationId: GoalBuilderConfig
+        - Coffee-Cans
+      operationId: getCoffeeCanListAndAccountDetails
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
+        - name: institutionUserId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: coffeeCanStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - DEACTIVE
+              - COMPLETED
+              - CLOSED
+              - NON_RECURRING
+              - ACTIVE_COMPLETED
+              - RECURRING
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /v1/coffee-cans/config:
+    get:
+      tags:
+        - Config API
+      operationId: ConfigAPI
       summary: "API to get Configs for the Goal Builder"
       description: Get Configs for the Goal Builder
       parameters:
@@ -215,15 +306,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GBConfigEntity"
+                $ref: "#/components/schemas/ConfigEntity"
 
-  /fws/live/v1/goals/user-account:
+  /v1/coffee-cans/account:
+    get:
+      tags:
+        - Coffee-Can Account Details
+      summary: Returns Coffee-Can Account Details
+      description: Returns Coffee-Can Account Details
+      operationId: getCoffee-CanAccount
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
+        - name: institutionUserId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInformation'
+        '400':
+          $ref: "#/components/responses/400-1"
+        '401':
+          $ref: "#/components/responses/401"
+        '500':
+          $ref: "#/components/responses/500"
     post:
       tags:
-        - Update Account
-      summary: Change bank account
-      description: Change bank account
-      operationId: updateAccount
+        - Coffee-Can Account Details
+      summary: Change Coffee-Can Account
+      description: Change Coffee-Can Account
+      operationId: updateCoffeeCanAccount
       parameters:
         - $ref: "#/components/parameters/correlationId"
         - $ref: "#/components/parameters/authorization"
@@ -251,14 +370,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/AccountInformation"
         '400':
-          $ref: "#/components/responses/400"
+          $ref: "#/components/responses/400-2"
         '401':
           $ref: "#/components/responses/401"
         '403':
           $ref: "#/components/responses/403"
         '500':
           $ref: "#/components/responses/500"
-  /fws/live/v1/goals/upcoming-transactions:
+  /v1/coffee-cans/upcoming-transactions:
     get:
       tags:
         - Transactions
@@ -291,7 +410,7 @@ paths:
         '500':
           $ref: "#/components/responses/500"
 
-  /fws/live/v1/goals/transactions:
+  /v1/coffee-cans/transactions:
     get:
       tags:
         - Transactions
@@ -335,52 +454,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransactionsResponse'
         '400':
-          description: Invalid date range
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BFFError"
-              example:
-                statusCode: 400
-                error: Invalid date range
-                message: Client executed a bad request
-                details: "/query/date must have correct format 'startEnd/endDate' "
-                displayMessage: Client executed a bad request
+          $ref: "#/components/responses/400-2"
         '401':
           $ref: "#/components/responses/401"
         '500':
           $ref: "#/components/responses/500"
 
-  /fws/live/v1/goals/goalAccount:
-    get:
-      tags:
-        - Goal Details
-      summary: Returns user bank account and Goal savings
-      description: Returns user bank account and Goal savings
-      operationId: getInstitutionUserAccountDetail
-      parameters:
-        - $ref: "#/components/parameters/correlationId"
-        - $ref: "#/components/parameters/authorization"
-        - name: institutionUserId
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountInformation'
-        '400':
-          $ref: "#/components/responses/400"
-        '401':
-          $ref: "#/components/responses/401"
-        '500':
-          $ref: "#/components/responses/500"
-  /fws/live/v1/goals/fund-types:
+  /v1/coffee-cans/fund-types:
     get:
       tags:
         - Funds
@@ -398,7 +478,7 @@ paths:
                 additionalProperties:
                   type: object
 
-  /fws/live/v1/goals/deposit-allocation:
+  /v1/coffee-cans/deposit-allocation:
     get:
       tags:
         - Deposit Allocation
@@ -419,48 +499,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DepositAllocationSumResponse'
-  /fws/live/v1/goals/goals-account:
+
+  /v1/coffee-cans/accounts:
     get:
       tags:
-        - Goals & Account Details
-      operationId: getCoffeeCanListAndAccountDetails
-      parameters:
-        - $ref: "#/components/parameters/correlationId"
-        - $ref: "#/components/parameters/authorization"
-        - name: institutionUserId
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: coffeeCanStatus
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - ACTIVE
-              - DEACTIVE
-              - COMPLETED
-              - CLOSED
-              - NON_RECURRING
-              - ACTIVE_COMPLETED
-              - RECURRING
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-  /fws/live/v1/goals/core-accounts:
-    get:
-      tags:
-        - Get Accounts
-      summary: Get eligible bank accounts
-      description: Returns eligible bank accounts
+        - Get Eligible Core Accounts
+      summary: Get Eligible Core Accounts
+      description: Returns Eligible Core Accounts
       operationId: getBankAccounts
       parameters:
         - $ref: "#/components/parameters/correlationId"
@@ -478,42 +523,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccountsResponse'
         '400':
-          $ref: "#/components/responses/400"
-        '401':
-          $ref: "#/components/responses/401"
-        '500':
-          $ref: "#/components/responses/500"
-  /fws/live/v1/goals/delete-upcoming:
-    delete:
-      tags:
-        - Delete Recurring Transfers
-      summary: Deletes(skip) upcoming execution of recurring transfer job
-      description: Deletes(skip) upcoming execution of recurring transfer job
-      operationId: deleteUpcomingJob
-      parameters:
-        - $ref: "#/components/parameters/correlationId"
-        - $ref: "#/components/parameters/authorization"
-        - name: coffeeCanId
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '204':
-          description: Resource Deleted
-          headers:
-            x-correlation-id:
-              $ref: "#/components/headers/res-correlationId"
-
-        '400':
-          $ref: "#/components/responses/400"
+          $ref: "#/components/responses/400-1"
         '401':
           $ref: "#/components/responses/401"
         '500':
           $ref: "#/components/responses/500"
 
-  /fws/live/v1/goals/complete-notification:
+  /v1/coffee-cans/toaster-notification:
     get:
       tags:
         - Toaster Notification
@@ -530,29 +546,37 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: object
+                $ref: '#/components/schemas/ToasterMessageNotification'
+
+  /v1/coffee-cans/toaster-notification/{notificationId}:
     put:
       tags:
         - Toaster Notification
       operationId: updateToasterNotification
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CompleteCanUpdateRequest'
+              $ref: '#/components/schemas/ToasterMessageNotification'
         required: true
       responses:
-        '200':
+        '204':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-  /fws/live/v1/goals/viewGLBEndUserFullList:
+        '400':
+          $ref: "#/components/responses/400-4"
+        '401':
+          $ref: "#/components/responses/401"
+        '500':
+          $ref: "#/components/responses/500"
+
+  /v1/coffee-cans/viewGLBEndUserFullList:
     post:
       tags:
         - AP-SupportDashboard-Extension
@@ -572,7 +596,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/findGLBEndUserStatus:
+  /v1/coffee-cans/findGLBEndUserStatus:
     post:
       tags:
         - AP-SupportDashboard-Extension
@@ -602,7 +626,7 @@ components:
       bearerFormat: JWT
       type: http
   schemas:
-    GBConfigEntity:
+    ConfigEntity:
       type: object
       properties:
         primaryUser:
@@ -614,7 +638,7 @@ components:
       required:
         - primaryUser
         - userType
-    CompleteCanUpdateRequest:
+    ToasterMessageNotification:
       type: object
       properties:
         notificationId:
@@ -798,14 +822,6 @@ components:
           type: string
         coffeeCanName:
           type: string
-    MessageToasterUpdateRequest:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            type: integer
-            format: int64
     UserInfo:
       type: object
       properties:
@@ -979,7 +995,7 @@ components:
         default: d6d6aca7-8ac6-4339-8470-f4a0acc781b3
 
   responses:
-    400:
+    400-1:
       description: "Bad Request"
       content:
         application/json:
@@ -989,7 +1005,43 @@ components:
             statusCode: 400
             error: ValidationException
             message: Client executed a bad request
-            details: "/query/goals must have required property 'accountId' "
+            details: "Required params missing"
+            displayMessage: Client executed a bad request
+    400-2:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 400
+            error: ValidationException
+            message: Client executed a bad request
+            details: "Invalid Date Range"
+            displayMessage: Client executed a bad request
+    400-3:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 400
+            error: ValidationException
+            message: Client executed a bad request
+            details: "/query must have required property 'accountId' "
+            displayMessage: Client executed a bad request
+    400-4:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BFFError"
+          example:
+            statusCode: 400
+            error: ValidationException
+            message: Client executed a bad request
+            details: "/query/notification must have required property 'notificationId' "
             displayMessage: Client executed a bad request
     401:
       description: "Invalid Session"
@@ -1002,6 +1054,7 @@ components:
             error: InvalidSessionException
             message: Unauthorized Invalid Session
             details: Invalid Session
+            displayMessage: Unauthorized Invalid Session
     403:
       description: "Invalid JWT"
       content:

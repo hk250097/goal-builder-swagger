@@ -20,7 +20,7 @@ servers:
           - prd
 
 paths:
-  /fws/live/v1/goals:
+  /v1/goals:
     get:
       tags:
         - Goals
@@ -229,7 +229,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/user-account:
+  /v1/goals/user-account:
     post:
       tags:
         - Change Account
@@ -286,7 +286,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/upcoming-transactions:
+  /v1/goals/upcoming-transactions:
     get:
       tags:
         - transactions-controller
@@ -331,7 +331,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/transactions:
+  /v1/goals/transactions:
     get:
       tags:
         - GB Transactios
@@ -404,7 +404,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/account-goal-detail:
+  /v1/goals/account-goal-detail:
     get:
       tags:
         - institution-user-account-controller
@@ -453,7 +453,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/fund-types:
+  /v1/goals/fund-types:
     get:
       tags:
         - Funds
@@ -467,7 +467,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/deposit-allocation:
+  /v1/goals/deposit-allocation:
     get:
       tags:
         - coffee-can-controller
@@ -514,7 +514,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/account:
+  /v1/goals/account:
     get:
       tags:
         - coffee-can-controller
@@ -548,7 +548,7 @@ paths:
                 type: array
                 items:
                   type: object
-  /fws/live/v1/goals/core-accounts:
+  /v1/goals/core-accounts:
     get:
       tags:
         - Get Accounts
@@ -596,7 +596,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/delete-upcoming:
+  /v1/goals/delete-upcoming:
     delete:
       tags:
         - Delete Recurring Transfers
@@ -649,7 +649,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/complete-notification:
+  /v1/goals/complete-notification:
     get:
       tags:
         - Toaster Notification
@@ -688,7 +688,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/viewGLBEndUserFullList:
+  /v1/goals/viewGLBEndUserFullList:
     post:
       tags:
         - AP-SupportDashboard-Extension
@@ -708,7 +708,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-  /fws/live/v1/goals/findGLBEndUserStatus:
+  /v1/goals/findGLBEndUserStatus:
     post:
       tags:
         - AP-SupportDashboard-Extension
