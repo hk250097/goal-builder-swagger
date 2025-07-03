@@ -17,7 +17,7 @@ servers:
           - prd
 
 paths:
-  /v1/notifications:
+  /v1/goal-builder/notifications:
     get:
       tags:
         - Notifications
@@ -44,6 +44,96 @@ paths:
         '500':
           $ref: "#/components/responses/500"
 
+  /v1/goal-builder/notifications/{notificationId}:
+    put:
+      tags:
+        - Notifications
+      operationId: PutNotifications
+      summary: "Update Notifications"
+      description: API For updating the Notifications
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationEntity'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NotificationEntity"
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
+
+    delete:
+      tags:
+        - Notifications
+      operationId: DeleteNotifications
+      summary: "Delete Notifications"
+      description: API For updating the Notifications
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - $ref: "#/components/parameters/authorization"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationEntity'
+      responses:
+        '204':
+          description: Success
+          headers:
+            x-correlation-id:
+              $ref: "#/components/headers/res-correlationId"
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
+
+  /v1/goal-builder/notifications/batchProcess:
+    post:
+      tags:
+        - Batch Operation
+      operationId: Batch Operation
+      summary: "Batch Operation"
+      description: Internal Candescent API For processing the Batch Jobs (Start, Stop)
+      parameters:
+        - $ref: "#/components/parameters/correlationId"
+        - name: operation
+          in: query
+          required: true
+          schema:
+            enum:
+              - stopBatch
+              - restartBatch
+              - shutDownQuartzScheduler
+              - startQuartzScheduler
+
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  batch:
+                    type: string
+                    example: success
+        '500':
+          $ref: "#/components/responses/500"
+
 # ------------------- Components ----------------
 
 components:
@@ -57,9 +147,107 @@ components:
       type: object
       properties:
         notificationId:
-          type: integer
-      required:
-        - notificationId
+          type: string
+          format: uuid
+        institution:
+          type: string
+          example: "05523"
+        institutionUser:
+          type: string
+          example: 84d5a0f1f12b419e9e990b2e383bd418
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: number
+          minimum: 10
+          maxLength: 10
+          example: 408 XXX XXXX
+        notificationCategory:
+          type: string
+          enum: [ON-TRACK,OFF-TRACK,WEEKLY,RESERVE-AMOUNT-NOTIFY]
+        notificationSubscriptionConditions:
+          type: array
+          items:
+            type: object
+            properties:
+              reserveBalanceThresholdLimit:
+                type: number
+                format: double
+                example: 100
+              goalThresholdLimit:
+                type: number
+                format: double
+                example: 150
+
+        notificationSubscriptionActions:
+          type: object
+          properties:
+            emailAction:
+              type: object
+              properties:
+                channel:
+                  type: string
+                  example: EMAIL
+                active:
+                  type: boolean
+                  example: Y
+                destination:
+                  type: string
+                  format: email
+            pushAction:
+              type: object
+              properties:
+                channel:
+                  type: string
+                  example: PUSH
+                active:
+                  type: boolean
+                  example: Y
+                destination:
+                  type: string
+                  example: CMA
+            InAppAction:
+              type: object
+              properties:
+                channel:
+                  type: string
+                  example: IN-APP
+                active:
+                  type: boolean
+                  example: N
+                destination:
+                  type: string
+                  example: CMA
+    NotificationCategory:
+      type: string
+      enum:
+        - ON-TRACK
+        - OFF-TRACK
+        - WEEKLY
+        - RESERVE-AMOUNT-NOTIFY
+    NotificationSubscriptionCondition:
+      type: object
+      properties:
+        code:
+          type: string
+          example: threshold
+        value:
+          type: number
+          example: 100
+    NotificationSubscriptionActions:
+      type: object
+      properties:
+        channel:
+          type: string
+          example: PUSH
+        active:
+          type: boolean
+          example: Y
+        destination:
+          type: string
+          example: CMA-CANDESCENT
+
 
     error:
       type: "object"
