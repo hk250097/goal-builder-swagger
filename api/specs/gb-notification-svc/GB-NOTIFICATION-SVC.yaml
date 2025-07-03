@@ -1,10 +1,10 @@
 openapi: 3.0.0
 info:
-  title: Goal Builder Notification API
-  description: Goal Builder Notification API Spec
+  title: GB Notification API
+  description: GB Notification API's Spec
   version: '1.0'
 servers:
-  - url: http://financial-wellness-{env}.financial-wellness.{env}.int.dbk.ncr.com
+  - url: http://goal-builder.{env}.int.dbk.ncr.com
     description: "GB Notification API's internal to Candescent"
     variables:
       env:
