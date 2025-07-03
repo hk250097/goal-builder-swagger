@@ -43,6 +43,36 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
+  post:
+    tags:
+      - Notifications
+    operationId: PostNotifications
+    summary: "Update Notifications"
+    description: API For Creating the Notifications
+    parameters:
+      - $ref: "#/components/parameters/correlationId"
+      - $ref: "#/components/parameters/authorization"
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationEntity'
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/NotificationEntity"
+      '400':
+        $ref: "#/components/responses/400"
+      '500':
+        $ref: "#/components/responses/500"
 
   /v1/goal-builder/notifications/{notificationId}:
     put:
