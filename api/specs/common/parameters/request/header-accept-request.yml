@@ -1,9 +1,0 @@
-components:
-  parameters:
-    header-accept-request:
-      in: "header"
-      name: "Accept"
-      schema:
-        type: "string"
-        enum:
-          - "application/json"
