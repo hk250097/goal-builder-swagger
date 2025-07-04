@@ -347,7 +347,7 @@ paths:
         '500':
           $ref: "#/components/responses/500"
 
-  /v1/coffee-cans/transactions?isPending={boolean}:
+  /v1/coffee-cans/transactions:
     get:
       tags:
         - Transactions
@@ -357,6 +357,11 @@ paths:
       parameters:
         - $ref: "#/components/parameters/correlationId"
         - $ref: "#/components/parameters/authorization"
+        - name: isPending
+          in: query
+          schema:
+            type: boolean
+            example: true
         - name: institutionUserId
           in: query
           required: true
