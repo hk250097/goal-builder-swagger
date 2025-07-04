@@ -33,12 +33,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/NotificationEntity"
+                $ref: "#/components/schemas/notifications"
         '400':
           $ref: "#/components/responses/400"
         '500':
@@ -56,19 +51,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NotificationEntity'
+              $ref: '#/components/schemas/notifications'
       responses:
-        '200':
-          description: Success
+        200:
+          description: "Successful operation"
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/NotificationEntity"
+                $ref: "#/components/schemas/notifications"
         '400':
           $ref: "#/components/responses/400"
         '500':
@@ -88,19 +78,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NotificationEntity'
+              $ref: '#/components/schemas/Notification'
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/NotificationEntity"
+                $ref: "#/components/schemas/notifications"
         '400':
           $ref: "#/components/responses/400"
         '500':
@@ -168,112 +153,83 @@ components:
       bearerFormat: JWT
       type: http
   schemas:
-    NotificationEntity:
-      type: object
-      properties:
-        notificationId:
-          type: string
-          format: uuid
-        institution:
-          type: string
-          example: "05523"
-        institutionUser:
-          type: string
-          example: 84d5a0f1f12b419e9e990b2e383bd418
-        email:
-          type: string
-          format: email
-        phoneNumber:
-          type: number
-          minimum: 10
-          maxLength: 10
-          example: 408 XXX XXXX
-        notificationCategory:
-          type: string
-          enum: [ON-TRACK,OFF-TRACK,WEEKLY,RESERVE-AMOUNT-NOTIFY]
-        notificationSubscriptionConditions:
-          type: array
-          items:
+
+    notifications:
+      $ref: "#/components/schemas/Notification"
+
+    Notification:
+      type: array
+      items:
+        type: object
+        properties:
+          notificationId:
+            type: string
+            format: uuid
+          institution:
+            type: string
+            example: "05555"
+          institutionUser:
+            type: string
+            example: 84d5a0f1f12b419e9e990b2e383bd418
+          email:
+            type: string
+            format: email
+          phoneNumber:
+            type: number
+            minimum: 10
+            maxLength: 10
+            example: 400 XXX XXXX
+          notificationCategory:
+            type: string
+            enum: [ ON-TRACK,OFF-TRACK,WEEKLY,RESERVE-AMOUNT-NOTIFY ]
+          notificationSubscriptionConditions:
+            type: array
+            items:
+              type: object
+              properties:
+                reserveBalanceThresholdLimit:
+                  type: number
+                  format: double
+                  example: 100
+          notificationSubscriptionActions:
             type: object
             properties:
-              reserveBalanceThresholdLimit:
-                type: number
-                format: double
-                example: 100
-              goalThresholdLimit:
-                type: number
-                format: double
-                example: 150
-
-        notificationSubscriptionActions:
-          type: object
-          properties:
-            emailAction:
-              type: object
-              properties:
-                channel:
-                  type: string
-                  example: EMAIL
-                active:
-                  type: boolean
-                  example: Y
-                destination:
-                  type: string
-                  format: email
-            pushAction:
-              type: object
-              properties:
-                channel:
-                  type: string
-                  example: PUSH
-                active:
-                  type: boolean
-                  example: Y
-                destination:
-                  type: string
-                  example: CMA
-            InAppAction:
-              type: object
-              properties:
-                channel:
-                  type: string
-                  example: IN-APP
-                active:
-                  type: boolean
-                  example: N
-                destination:
-                  type: string
-                  example: CMA
-    NotificationCategory:
-      type: string
-      enum:
-        - ON-TRACK
-        - OFF-TRACK
-        - WEEKLY
-        - RESERVE-AMOUNT-NOTIFY
-    NotificationSubscriptionCondition:
-      type: object
-      properties:
-        code:
-          type: string
-          example: threshold
-        value:
-          type: number
-          example: 100
-    NotificationSubscriptionActions:
-      type: object
-      properties:
-        channel:
-          type: string
-          example: PUSH
-        active:
-          type: boolean
-          example: Y
-        destination:
-          type: string
-          example: CMA-CANDESCENT
-
-
+              emailAction:
+                type: object
+                properties:
+                  channel:
+                    type: string
+                    example: EMAIL
+                  active:
+                    type: boolean
+                    example: Y
+                  destination:
+                    type: string
+                    format: email
+              pushAction:
+                type: object
+                properties:
+                  channel:
+                    type: string
+                    example: PUSH
+                  active:
+                    type: boolean
+                    example: Y
+                  destination:
+                    type: string
+                    example: CMA
+              InAppAction:
+                type: object
+                properties:
+                  channel:
+                    type: string
+                    example: IN-APP
+                  active:
+                    type: boolean
+                    example: N
+                  destination:
+                    type: string
+                    example: CMA
     error:
       type: "object"
       properties:

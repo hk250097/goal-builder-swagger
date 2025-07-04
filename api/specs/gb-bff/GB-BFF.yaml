@@ -52,7 +52,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  coffeeCan:
                     type: array
                     items:
                       $ref: "#/components/schemas/CoffeeCan"
@@ -87,7 +87,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  coffeeCan:
                     type: array
                     items:
                       $ref: "#/components/schemas/CoffeeCan"
@@ -126,7 +126,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  coffeeCan:
                     type: array
                     items:
                       $ref: "#/components/schemas/CoffeeCan"
@@ -178,7 +178,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  coffeeCan:
                     type: array
                     items:
                       $ref: "#/components/schemas/CoffeeCan"
